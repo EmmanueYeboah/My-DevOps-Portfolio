@@ -98,9 +98,11 @@ jobs:
 
       - name: Build and deploy frontend
         run: |
-          cd devops-portfolio/frontend
-          npm install
-          npm run build
+          cd devops-portfolio/terraform
+          API_URL=$(terraform output -raw backend_api_url)
+          cd ../frontend
+          REACT_APP_API_URL=$API_URL npm install
+          REACT_APP_API_URL=$API_URL npm run build
           cd ../terraform
           BUCKET_NAME=$(terraform output -raw s3_frontend_bucket_name)
           aws s3 sync ../frontend/build/ s3://$BUCKET_NAME --delete
